@@ -10,13 +10,13 @@ export const signupUser = asyncHandler(async (req, res) => {
   const userError = UserZodSchema.safeParse({ email, password, role });
 
   if (!userError.success) {
-    throw new ApiError(userError.error.message, 400);
+    throw new ApiError(400, userError.error.message);
   }
 
   const findUser = await User.findOne({ email });
 
   if (findUser) {
-    throw new ApiError("User already exists", 400);
+    throw new ApiError(400, "User already exists");
   }
 
   const createUser = await User.create({
@@ -26,11 +26,11 @@ export const signupUser = asyncHandler(async (req, res) => {
   });
 
   if (!createUser) {
-    throw new ApiError("failed to save on db");
+    throw new ApiError(400, "failed to save on db");
   }
   res
     .status(201)
-    .json(new ApiResponse("User created successfully", 201, createUser));
+    .json(new ApiResponse(201, "User created successfully", createUser));
 });
 
 export const loginUser = asyncHandler(async (req, resp) => {
@@ -39,19 +39,19 @@ export const loginUser = asyncHandler(async (req, resp) => {
   const loginError = UserZodSchema.safeParse({ email, password });
 
   if (!loginError.success) {
-    throw new ApiError(loginError.error.message, 400);
+    throw new ApiError(400, loginError.error.message);
   }
 
   const findUser = await User.findOne({ email });
 
   if (!findUser) {
-    throw new ApiError("user not found");
+    throw new ApiError(400, "user not found");
   }
 
   const checkPassword = await findUser.isPasswordCorrect(password);
 
   if (!checkPassword) {
-    throw new ApiError("incorrect password");
+    throw new ApiError(400, "incorrect password");
   }
 
   const accessToken = findUser.generateAccessToken();
@@ -63,15 +63,14 @@ export const loginUser = asyncHandler(async (req, resp) => {
     secure: true,
   });
 
-  resp.status(200).json(new ApiResponse("login successfully", 200, findUser));
+  resp.status(200).json(new ApiResponse(200, "login successfully", findUser));
 });
 
+export const checkUser = asyncHandler(async (req, resp) => {
+  const user = await User.findById(req.user._id);
 
-export const checkUser=asyncHandler(async(req,resp)=>{
-  const user=await User.findById(req.user._id);
-
-  if(!user){
-    throw new ApiError("user not found",404);
+  if (!user) {
+    throw new ApiError(404, "user not found");
   }
-  resp.status(200).json(new ApiResponse("user found",200,user));
-})
+  resp.status(200).json(new ApiResponse(200, "user found", user));
+});

@@ -6,12 +6,7 @@ interface IUser extends Document {
   name?: string;
   email: string;
   password: string;
-<<<<<<< HEAD
-  roles: ("user" | "recruiter")[];
-  resume?:string;
-=======
-  role: "user" | "admin";
->>>>>>> 16401ca065b77653d9dc39dc7cfd34bb47c27412
+  role: "user" | "recruiter";
   location?: string;
   linkedin?: string;
   github?: string;
