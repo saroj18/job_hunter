@@ -7,7 +7,7 @@ interface IUser extends Document {
   email: string;
   password: string;
   roles: ("user" | "recruiter")[];
-  resume:{type:String},
+  resume?:string;
   location?: string;
   linkedin?: string;
   github?: string;

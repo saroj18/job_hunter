@@ -1,6 +1,48 @@
-import mongoose from "mongoose";
+import mongoose,{Schema,Document,Model} from "mongoose";
 
-const jobSchema = new mongoose.Schema({
+interface IJob extends Document {
+  title: string;
+  company: string;
+  location: string;
+  employmentType:string;
+  salary: {
+    min:number;
+    max:number;
+    currency: string;
+  };
+  description: string;
+  responsibilities: [{
+    type:string;
+  }];
+  requirements: [
+    {
+      type: string,
+    },
+  ];
+  skills: [
+    {
+      type: string,
+    },
+  ];
+  experienceLevel: {
+    type: string,
+  },
+  postedBy: mongoose.Schema.Types.ObjectId;
+  applicants: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  ];
+
+  expiresAt: {
+    type: Date,
+  };
+  isActive: {
+    type: Boolean,
+    default: true,
+  };
+}
+const JobSchema = new Schema<IJob>({
   title: {
     type: String,
     required: true,
@@ -67,10 +109,6 @@ const jobSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
-  postedAt: {
-    type: Date,
-    default: Date.now,
-  },
   expiresAt: {
     type: Date,
   },
@@ -78,7 +116,9 @@ const jobSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+},{
+  timestamps:true
 });
 
-export const Job = mongoose.model("Job", jobSchema);
+export const Job:Model<IJob> = mongoose.model<IJob>("Job", JobSchema);
 
