@@ -6,7 +6,12 @@ interface IUser extends Document {
   name?: string;
   email: string;
   password: string;
+<<<<<<< HEAD
   role: "user" | "admin";
+=======
+  roles: ("user" | "recruiter")[];
+  resume:{type:String},
+>>>>>>> ca7dd3379003a3473cc7dcf6115459ec5d2fc70d
   location?: string;
   linkedin?: string;
   github?: string;
@@ -25,9 +30,15 @@ const UserSchema = new Schema<IUser>(
     role: {
       type: String,
       required: true,
+<<<<<<< HEAD
       default: "user",
       enum: ["user", "admin"],
+=======
+      default: ["user"],
+      enum: ["user", "recruiter"],
+>>>>>>> ca7dd3379003a3473cc7dcf6115459ec5d2fc70d
     },
+    resume:{type:String},
     location: { type: String },
     linkedin: { type: String },
     github: { type: String },
