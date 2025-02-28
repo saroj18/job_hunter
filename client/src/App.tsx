@@ -2,8 +2,9 @@ import { Routes, Route } from "react-router";
 import LandingPage from "./pages/landing-page";
 import LoginPage from "./pages/login";
 import SignupPage from "./pages/signup";
-import ResumeBuilder from "./pages/resume-builder";
+
 import MainLayout from "./components/layout/main-layout";
+import ResumeBuilder from "./pages/resume-builder";
 
 function App() {
   return (
