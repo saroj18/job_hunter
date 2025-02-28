@@ -2,6 +2,8 @@ import { useState } from "react";
 import InfoStep from "../components/multi-step-form/info-step";
 import type { ResumeData } from "../types/resume";
 import CertificationsStep from "../components/multi-step-form/certification";
+import EducationStep from "../components/multi-step-form/Education";
+import LanguagesStep from "../components/multi-step-form/language";
 
 const initialFormData: ResumeData = {
   title: "",
@@ -54,6 +56,8 @@ function ResumeBuilder() {
       ResumeBuilder
       <InfoStep data={formData} updateData={updateFormData} />
       <CertificationsStep data={formData} updateData={updateFormData} />
+      <EducationStep data={formData} updateData={updateFormData} />
+      <LanguagesStep data={formData} updateData={updateFormData} />
     </div>
   );
 }
