@@ -1,15 +1,12 @@
 import type React from "react";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import Header from "../components/header";
+
 import FeatureCard from "../components/feature-card";
 
 const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
-      {/* Header */}
-      <Header />
-
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-400 to-blue-600 text-white py-24">
         <div className="container mx-auto px-4 text-center">
