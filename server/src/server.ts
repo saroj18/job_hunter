@@ -1,11 +1,11 @@
-import express from "express";
 import { connectToDB } from "./db";
 import dotenv from 'dotenv'
+import { app } from "./app";
 
 dotenv.config({
   path:'.env'
 })
-export const app = express();
+
 
 
 connectToDB().then(()=>{

@@ -1,159 +1,76 @@
-import { useState } from "react";
-import type { ResumeData, Education } from "../../types/resume";
 
-interface EducationStepProps {
-  data: ResumeData;
-  updateData: (data: Partial<ResumeData>) => void;
+import { useState } from "react";
+import { Education } from "../../types/resume.ts";
+
+interface EducationProps {
+  data: Education[];
+  updateData: (value: Education[]) => void;
 }
 
-const EducationStep = ({ data, updateData }: EducationStepProps) => {
-  const [educations, setEducations] = useState<Education[]>(
-    data.education.length
-      ? data.education
-      : [
-          {
-            degree: "",
-            institution: "",
-            location: "",
-            graduationDate: "",
-          },
-        ]
-  );
+export default function EducationForm({ data, updateData }: EducationProps) {
+  const [education, setEducation] = useState<Education>({
+    degree: "",
+    institution: "",
+    location: "",
+    graduationDate: undefined,
+  });
 
-  const handleEducationChange = (
-    index: number,
-    field: keyof Education,
-    value: string
-  ) => {
-    const updatedEducations = [...educations];
-    updatedEducations[index] = {
-      ...updatedEducations[index],
-      [field]: value,
-    };
-
-    setEducations(updatedEducations);
-    updateData({ education: updatedEducations });
+  const handleAdd = () => {
+    updateData([...data, education]);
+    setEducation({
+      degree: "",
+      institution: "",
+      location: "",
+      graduationDate: undefined,
+    });
   };
 
-  const addEducation = () => {
-    setEducations([
-      ...educations,
-      {
-        degree: "",
-        institution: "",
-        location: "",
-        graduationDate: "",
-      },
-    ]);
-  };
-
-  const removeEducation = (index: number) => {
-    if (educations.length > 1) {
-      const updatedEducations = educations.filter((_, i) => i !== index);
-      setEducations(updatedEducations);
-      updateData({ education: updatedEducations });
-    }
+  const handleInputChange = (field: keyof Education, value: string) => {
+    setEducation((prev) => ({
+      ...prev,
+      [field]: field === "graduationDate" ? new Date(value) : value,
+    }));
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-gray-800">Education</h2>
-
-      {educations.map((education, index) => (
-        <div
-          key={index}
-          className="p-4 border border-gray-200 rounded-md bg-gray-50"
-        >
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-medium">Education {index + 1}</h3>
-            {educations.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeEducation(index)}
-                className="text-red-600 hover:text-red-800"
-              >
-                Remove
-              </button>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Degree *
-              </label>
-              <input
-                type="text"
-                value={education.degree}
-                onChange={(e) =>
-                  handleEducationChange(index, "degree", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Institution *
-              </label>
-              <input
-                type="text"
-                value={education.institution}
-                onChange={(e) =>
-                  handleEducationChange(index, "institution", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Location
-              </label>
-              <input
-                type="text"
-                value={education.location}
-                onChange={(e) =>
-                  handleEducationChange(index, "location", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Graduation Date
-              </label>
-              <input
-                type="date"
-                value={
-                  typeof education.graduationDate === "string"
-                    ? education.graduationDate
-                    : ""
-                }
-                onChange={(e) =>
-                  handleEducationChange(index, "graduationDate", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
+    <div className="space-y-4">
+      {data.map((edu, index) => (
+        <div key={index} className="p-4 border rounded">
+          <h3 className="font-semibold">{edu.degree}</h3>
+          <p>
+            {edu.institution}, {edu.location}
+          </p>
+          <p>Graduated: {edu.graduationDate ? new Date(edu.graduationDate).toDateString() : ""}</p>
         </div>
       ))}
-
-      <button
-        type="button"
-        onClick={addEducation}
-        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-      >
-        Add Another Education
-      </button>
+      <div className="space-y-2">
+        <input
+          placeholder="Degree"
+          value={education.degree}
+          onChange={(e) => handleInputChange("degree", e.target.value)}
+        />
+        <input
+          placeholder="Institution"
+          value={education.institution}
+          onChange={(e) => handleInputChange("institution", e.target.value)}
+        />
+        <input
+          placeholder="Location"
+          value={education.location}
+          onChange={(e) => handleInputChange("location", e.target.value)}
+        />
+        <input
+          type="date"
+          placeholder="Graduation Date"
+          value={
+            education.graduationDate
+              ? (education.graduationDate instanceof Date ? education.graduationDate.toISOString().split("T")[0] : "")
+              : ""
+          }
+          onChange={(e) => handleInputChange("graduationDate", e.target.value)}
+        />
+        <button onClick={handleAdd}>Add Education</button>
+      </div>
     </div>
   );
-};
-
-export default EducationStep;
+}

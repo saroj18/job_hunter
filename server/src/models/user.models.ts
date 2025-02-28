@@ -3,15 +3,20 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 interface IUser extends Document {
-  name: string;
+  name?: string;
   email: string;
   password: string;
+<<<<<<< HEAD
   roles: ("user" | "recruiter")[];
   resume?:string;
+=======
+  role: "user" | "admin";
+>>>>>>> 16401ca065b77653d9dc39dc7cfd34bb47c27412
   location?: string;
   linkedin?: string;
   github?: string;
   portfolio?: string;
+  resume: string;
   refreshToken?: string;
   isPasswordCorrect(password: string): Promise<boolean>;
   generateAccessToken(): string;
@@ -20,16 +25,16 @@ interface IUser extends Document {
 
 const UserSchema = new Schema<IUser>(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: false },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    roles: {
-      type: [String],
+    role: {
+      type: String,
       required: true,
-      default: ["user"],
-      enum: ["user", "recruiter"],
+      default: "user",
+      enum: ["user", "admin"],
     },
-    resume:{type:String},
+    resume: { type: String },
     location: { type: String },
     linkedin: { type: String },
     github: { type: String },
@@ -47,7 +52,9 @@ UserSchema.pre<IUser>("save", async function (next) {
   next();
 });
 
-UserSchema.methods.isPasswordCorrect = async function (password: string): Promise<boolean> {
+UserSchema.methods.isPasswordCorrect = async function (
+  password: string
+): Promise<boolean> {
   return bcrypt.compare(password, this.password);
 };
 
@@ -55,7 +62,6 @@ UserSchema.methods.generateAccessToken = function (): string {
   return jwt.sign(
     {
       _id: this._id,
-      name: this.name,
       email: this.email,
     },
     process.env.ACCESS_TOKEN_SECRET as string,
